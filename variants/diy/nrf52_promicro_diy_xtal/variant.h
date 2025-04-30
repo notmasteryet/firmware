@@ -111,11 +111,18 @@ NRF52 PRO MICRO PIN ASSIGNMENT
 #define PIN_SPI_MOSI (32 + 15) // P1.15
 #define PIN_SPI_SCK (32 + 11)  // P1.11
 
+#define LORA_MISO PIN_SPI_MISO
+#define LORA_MOSI PIN_SPI_MOSI
+#define LORA_SCK PIN_SPI_SCK
+#define LORA_CS (32 + 13) // P1.13
+#define LORA_RESET (0 + 9) // P0.09 NRST
+
 // LORA MODULES
-#define USE_LLCC68
+//#define USE_LLCC68
 #define USE_SX1262
 // #define USE_RF95
-#define USE_SX1268
+// #define USE_SX1268
+#define USE_LR1121
 
 // LORA CONFIG
 #define SX126X_CS (32 + 13)      // P1.13 FIXME - we really should define LORA_CS instead
@@ -143,6 +150,19 @@ Core1262 has TCXO
 
 */
 // #define SX126X_DIO3_TCXO_VOLTAGE 1.8
+
+// LR1121
+#ifdef USE_LR1121
+#define LR1121_IRQ_PIN (0 + 10)      // P0.10 IRQ
+#define LR1121_NRESET_PIN LORA_RESET // P0.09 NRST
+#define LR1121_BUSY_PIN (0 + 29)     // P0.29 BUSY
+#define LR1121_SPI_NSS_PIN LORA_CS   // P1.13
+#define LR1121_SPI_SCK_PIN LORA_SCK
+#define LR1121_SPI_MOSI_PIN LORA_MOSI
+#define LR1121_SPI_MISO_PIN LORA_MISO
+#define LR11X0_DIO3_TCXO_VOLTAGE 1.8
+#define LR11X0_DIO_AS_RF_SWITCH
+#endif
 
 #ifdef __cplusplus
 }

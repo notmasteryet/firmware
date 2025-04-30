@@ -4,6 +4,7 @@
 
 #define ARDUINO_ARCH_AVR
 
+
 // default I2C pins:
 // SDA = 4
 // SCL = 5
@@ -46,5 +47,5 @@
 #define SX126X_BUSY LORA_DIO2
 #define SX126X_RESET LORA_RESET
 #define SX126X_DIO2_AS_RF_SWITCH
-#define SX126X_DIO3_TCXO_VOLTAGE 1.8
+//#define SX126X_DIO3_TCXO_VOLTAGE 1.8
 #endif
