@@ -63,7 +63,7 @@ SerialModuleRadio *serialModuleRadio;
 #if defined(TTGO_T_ECHO) || defined(CANARYONE) || defined(MESHLINK) || defined(ELECROW_ThinkNode_M1)
 SerialModule::SerialModule() : StreamAPI(&Serial), concurrency::OSThread("Serial") {}
 static Print *serialPrint = &Serial;
-#elif defined(CONFIG_IDF_TARGET_ESP32C6)
+#elif defined(CONFIG_IDF_TARGET_ESP32C6) || defined(PROMICRO_LR1121)
 SerialModule::SerialModule() : StreamAPI(&Serial1), concurrency::OSThread("Serial") {}
 static Print *serialPrint = &Serial1;
 #else
@@ -140,10 +140,15 @@ int32_t SerialModule::runOnce()
                 // Give it a chance to flush out 💩
                 delay(10);
             }
-#if defined(CONFIG_IDF_TARGET_ESP32C6)
+#if defined(CONFIG_IDF_TARGET_ESP32C6) || defined(PROMICRO_LR1121)
             if (moduleConfig.serial.rxd && moduleConfig.serial.txd) {
+#if !defined(PROMICRO_LR1121)
                 Serial1.setRxBufferSize(RX_BUFFER);
                 Serial1.begin(baud, SERIAL_8N1, moduleConfig.serial.rxd, moduleConfig.serial.txd);
+#else
+                Serial1.begin(baud);
+                Serial1.setTimeout(moduleConfig.serial.timeout > 0 ? moduleConfig.serial.timeout : TIMEOUT);
+#endif
             } else {
                 Serial.begin(baud);
                 Serial.setTimeout(moduleConfig.serial.timeout > 0 ? moduleConfig.serial.timeout : TIMEOUT);
@@ -219,7 +224,7 @@ int32_t SerialModule::runOnce()
                 processWXSerial();
 
             } else {
-#if defined(CONFIG_IDF_TARGET_ESP32C6)
+#if defined(CONFIG_IDF_TARGET_ESP32C6) || defined(PROMICRO_LR1121)
                 while (Serial1.available()) {
                     serialPayloadSize = Serial1.readBytes(serialBytes, meshtastic_Constants_DATA_PAYLOAD_LEN);
 #else
@@ -460,7 +465,7 @@ ParsedLine parseLine(const char *line)
 void SerialModule::processWXSerial()
 {
 #if !defined(TTGO_T_ECHO) && !defined(CANARYONE) && !defined(CONFIG_IDF_TARGET_ESP32C6) && !defined(MESHLINK) &&                 \
-    !defined(ELECROW_ThinkNode_M1)
+    !defined(ELECROW_ThinkNode_M1) && !defined(PROMICRO_LR1121)
     static unsigned int lastAveraged = 0;
     static unsigned int averageIntervalMillis = 300000; // 5 minutes hard coded.
     static double dir_sum_sin = 0;
