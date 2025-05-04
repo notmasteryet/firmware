@@ -3,10 +3,23 @@
 // LED pin on HT-DEV-ESP_V2 and HT-DEV-ESP_V3
 // https://resource.heltec.cn/download/HT-CT62/HT-CT62_Reference_Design.pdf
 // https://resource.heltec.cn/download/HT-DEV-ESP/HT-DEV-ESP_V3_Sch.pdf
-#define LED_PIN 2      // LED
-#define LED_STATE_ON 1 // State when LED is lit
+#define LED_PIN 18
+//#define LED_PIN 2      // LED
+//#define LED_STATE_ON 1 // State when LED is lit
 
-#define HAS_SCREEN 0
+//#define HAS_SCREEN 0
+#define HAS_SCREEN 1
+#define USE_SSD1306
+
+#define I2C_SCL 0
+#define I2C_SDA 1
+
+#define BATTERY_PIN 2
+#define ADC_CHANNEL ADC1_GPIO2_CHANNEL
+// ratio of voltage divider = 3.2 (R2=220k, R1=100k)
+#define ADC_MULTIPLIER 3.3 // 3.0 + a bit for being optimistic
+#define BATTERY_SENSE_RESOLUTION_BITS ADC_RESOLUTION
+
 #define HAS_GPS 0
 #undef GPS_RX_PIN
 #undef GPS_TX_PIN
