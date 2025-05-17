@@ -96,6 +96,10 @@
 #include "modules/DropzoneModule.h"
 #endif
 
+#if defined(MY_ANEMOMETER)
+#include "modules/AnemometerModule.h"
+#endif
+
 /**
  * Create module instances here.  If you are adding a new module, you must 'new' it here (or somewhere else)
  */
@@ -136,9 +140,15 @@ void setupModules()
 #if !MESHTASTIC_EXCLUDE_DROPZONE
         dropzoneModule = new DropzoneModule();
 #endif
+
 #if !MESHTASTIC_EXCLUDE_GENERIC_THREAD_MODULE
         new GenericThreadModule();
 #endif
+
+#if defined(MY_ANEMOMETER)
+        anemometerModule = new AnemometerModule();
+#endif
+
         // Note: if the rest of meshtastic doesn't need to explicitly use your module, you do not need to assign the instance
         // to a global variable.
 

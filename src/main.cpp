@@ -512,6 +512,11 @@ void setup()
     Wire.begin();
 #elif defined(I2C_SDA) && !defined(ARCH_RP2040)
     Wire.begin(I2C_SDA, I2C_SCL);
+#if defined(I2C_SPEED)
+    Wire.begin(I2C_SDA, I2C_SCL, I2C_SPEED);
+#else
+    Wire.begin(I2C_SDA, I2C_SCL);
+#endif
 #elif defined(ARCH_PORTDUINO)
     if (settingsStrings[i2cdev] != "") {
         LOG_INFO("Use %s as I2C device", settingsStrings[i2cdev].c_str());
@@ -576,7 +581,11 @@ void setup()
     Wire.begin();
     i2cScanner->scanPort(ScanI2C::I2CPort::WIRE);
 #elif defined(I2C_SDA) && !defined(ARCH_RP2040)
+#if defined(I2C_SPEED)
+    Wire.begin(I2C_SDA, I2C_SCL, I2C_SPEED);
+#else
     Wire.begin(I2C_SDA, I2C_SCL);
+#endif
     i2cScanner->scanPort(ScanI2C::I2CPort::WIRE);
 #elif defined(ARCH_PORTDUINO)
     if (settingsStrings[i2cdev] != "") {
