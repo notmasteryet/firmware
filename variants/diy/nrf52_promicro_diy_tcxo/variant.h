@@ -22,26 +22,26 @@ extern "C" {
 /*
 NRF52 PRO MICRO PIN ASSIGNMENT
 
-| Pin Â  | Function Â   | Â    | Pin Â  Â   | Function Â  Â  | RF95  |
+| Pin   | Function    |     | Pin      | Function     | RF95  |
 | ----- | ----------- | --- | -------- | ------------ | ----- |
-| Gnd Â  | Â  Â  Â  Â  Â  Â  | Â    | vbat Â  Â  | Â  Â  Â  Â  Â  Â   |       |
-| P0.06 | Serial2 RX  | Â    | vbat Â  Â  | Â  Â  Â  Â  Â  Â   |       |
-| P0.08 | Serial2 TX  | Â    | Gnd Â  Â   | Â  Â  Â  Â  Â  Â   |       |
-| Gnd Â  | Â  Â  Â  Â  Â  Â  | Â    | reset Â   | Â  Â  Â  Â  Â  Â   |       |
-| Gnd Â  | Â  Â  Â  Â  Â  Â  | Â    | ext_vcc  | *see 0.13 Â   |       |
-| P0.17 | RXEN Â  Â  Â   | Â    | P0.31 Â   | BATTERY_PIN  |       |
-| P0.20 | GPS_RX Â  Â   | Â    | P0.29 Â   | BUSY Â  Â  Â  Â  | DIO0  |
-| P0.22 | GPS_TX Â  Â   | Â    | P0.02 Â   | MISO         | MISO  |
-| P0.24 | GPS_EN Â  Â   | Â    | P1.15 Â   | MOSI Â  Â  Â  Â  | MOSI  |
-| P1.00 | BUTTON_PIN  | Â    | P1.13 Â   | CS Â  Â  Â  Â  Â  | CS Â   |
-| P0.11 | SCL Â  Â  Â  Â  | Â    | P1.11 Â   | SCK Â  Â  Â  Â   | SCK   |
-| P1.04 | SDA Â  Â  Â  Â  | Â    | P0.10 Â   | DIO1/IRQ Â  Â  | DIO1  |
-| P1.06 | Free pin Â   | Â    | P0.09 Â   | RESET Â  Â  Â   | RST   |
-| Â  Â  Â  | Â  Â  Â  Â  Â  Â  | Â    | Â  Â  Â  Â   | Â  Â  Â  Â  Â  Â   |       |
-| Â  Â  Â  | Mid board Â  | Â    | Â  Â  Â  Â   | Internal Â  Â  |       |
-| P1.01 | Free pin Â   | Â    | 0.15 Â  Â  | LED Â  Â  Â  Â   |       |
-| P1.02 | Free pin Â   | Â    | 0.13 Â  Â  | 3V3_EN Â  Â  Â  |       |
-| P1.07 | Free pin Â   | Â    | Â  Â  Â  Â   | Â  Â  Â  Â  Â  Â   |       |
+| Gnd   |             |     | vbat     |              |       |
+| P0.06 | Serial2 RX  |     | vbat     |              |       |
+| P0.08 | Serial2 TX  |     | Gnd      |              |       |
+| Gnd   |             |     | reset    |              |       |
+| Gnd   |             |     | ext_vcc  | *see 0.13    |       |
+| P0.17 | RXEN        |     | P0.31    | BATTERY_PIN  |       |
+| P0.20 | GPS_RX      |     | P0.29    | BUSY         | DIO0  |
+| P0.22 | GPS_TX      |     | P0.02    | MISO         | MISO  |
+| P0.24 | GPS_EN      |     | P1.15    | MOSI         | MOSI  |
+| P1.00 | BUTTON_PIN  |     | P1.13    | CS           | CS    |
+| P0.11 | SCL         |     | P1.11    | SCK          | SCK   |
+| P1.04 | SDA         |     | P0.10    | DIO1/IRQ     | DIO1  |
+| P1.06 | Free pin    |     | P0.09    | RESET        | RST   |
+|       |             |     |          |              |       |
+|       | Mid board   |     |          | Internal     |       |
+| P1.01 | Free pin    |     | 0.15     | LED          |       |
+| P1.02 | Free pin    |     | 0.13     | 3V3_EN       |       |
+| P1.07 | Free pin    |     |          |              |       |
 */
 
 // Number of pins defined in PinDescription array
@@ -195,7 +195,7 @@ settings.
 | NiceRF       | Lora1262         | yes  | Int       |                                       |
 | Waveshare    | Core1262-HF      | yes  | Ext       |                                       |
 | Waveshare    | LoRa Node Module | yes  | Int       |                                       |
-| Seeed        | Wio-SX1262       | yes  | Int       | Sooooo cute!                          |
+| Seeed        | Wio-SX1262       | yes  | Ext       | Cute! DIO2/TXEN are not exposed       |
 | AI-Thinker   | RA-02            | No   | Int       | SX1278 **433mhz band only**           |
 | RF Solutions | RFM95            | No   | Int       | Untested                              |
 | Ebyte        | E80-900M2213S    | Yes  | Int       | LR1121 radio                          |

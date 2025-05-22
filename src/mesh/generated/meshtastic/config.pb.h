@@ -180,14 +180,16 @@ typedef enum _meshtastic_Config_DisplayConfig_DisplayUnits {
 
 /* Override OLED outo detect with this if it fails. */
 typedef enum _meshtastic_Config_DisplayConfig_OledType {
-    /* Default / Auto */
+    /* Default / Autodetect */
     meshtastic_Config_DisplayConfig_OledType_OLED_AUTO = 0,
-    /* Default / Auto */
+    /* Default / Autodetect */
     meshtastic_Config_DisplayConfig_OledType_OLED_SSD1306 = 1,
-    /* Default / Auto */
+    /* Default / Autodetect */
     meshtastic_Config_DisplayConfig_OledType_OLED_SH1106 = 2,
     /* Can not be auto detected but set by proto. Used for 128x128 screens */
-    meshtastic_Config_DisplayConfig_OledType_OLED_SH1107 = 3
+    meshtastic_Config_DisplayConfig_OledType_OLED_SH1107 = 3,
+    /* Can not be auto detected but set by proto. Used for 128x64 screens */
+    meshtastic_Config_DisplayConfig_OledType_OLED_SH1107_128_64 = 4
 } meshtastic_Config_DisplayConfig_OledType;
 
 typedef enum _meshtastic_Config_DisplayConfig_DisplayMode {
@@ -374,7 +376,7 @@ typedef struct _meshtastic_Config_PositionConfig {
 /* Power Config\
  See [Power Config](/docs/settings/config/power) for additional power config details. */
 typedef struct _meshtastic_Config_PowerConfig {
-    /* Description: Will sleep everything as much as possible, for the tracker and sensor role this will also include the lora radio. 
+    /* Description: Will sleep everything as much as possible, for the tracker and sensor role this will also include the lora radio.
  Don't use this setting if you want to use your device with the phone apps or are using a device without a user button.
  Technical Details: Works for ESP32 devices and NRF52 devices in the Sensor or Tracker roles */
     bool is_power_saving;
@@ -426,7 +428,7 @@ typedef struct _meshtastic_Config_NetworkConfig {
     char wifi_ssid[33];
     /* If set, will be use to authenticate to the named wifi */
     char wifi_psk[65];
-    /* NTP server to use if WiFi is conneced, defaults to `0.pool.ntp.org` */
+    /* NTP server to use if WiFi is conneced, defaults to `meshtastic.pool.ntp.org` */
     char ntp_server[33];
     /* Enable Ethernet */
     bool eth_enabled;
@@ -468,6 +470,9 @@ typedef struct _meshtastic_Config_DisplayConfig {
     bool wake_on_tap_or_motion;
     /* Indicates how to rotate or invert the compass output to accurate display on the display. */
     meshtastic_Config_DisplayConfig_CompassOrientation compass_orientation;
+    /* If false (default), the device will display the time in 24-hour format on screen.
+ If true, the device will display the time in 12-hour format on screen. */
+    bool use_12h_clock;
 } meshtastic_Config_DisplayConfig;
 
 /* Lora Config */
@@ -636,8 +641,8 @@ extern "C" {
 #define _meshtastic_Config_DisplayConfig_DisplayUnits_ARRAYSIZE ((meshtastic_Config_DisplayConfig_DisplayUnits)(meshtastic_Config_DisplayConfig_DisplayUnits_IMPERIAL+1))
 
 #define _meshtastic_Config_DisplayConfig_OledType_MIN meshtastic_Config_DisplayConfig_OledType_OLED_AUTO
-#define _meshtastic_Config_DisplayConfig_OledType_MAX meshtastic_Config_DisplayConfig_OledType_OLED_SH1107
-#define _meshtastic_Config_DisplayConfig_OledType_ARRAYSIZE ((meshtastic_Config_DisplayConfig_OledType)(meshtastic_Config_DisplayConfig_OledType_OLED_SH1107+1))
+#define _meshtastic_Config_DisplayConfig_OledType_MAX meshtastic_Config_DisplayConfig_OledType_OLED_SH1107_128_64
+#define _meshtastic_Config_DisplayConfig_OledType_ARRAYSIZE ((meshtastic_Config_DisplayConfig_OledType)(meshtastic_Config_DisplayConfig_OledType_OLED_SH1107_128_64+1))
 
 #define _meshtastic_Config_DisplayConfig_DisplayMode_MIN meshtastic_Config_DisplayConfig_DisplayMode_DEFAULT
 #define _meshtastic_Config_DisplayConfig_DisplayMode_MAX meshtastic_Config_DisplayConfig_DisplayMode_COLOR
@@ -690,7 +695,7 @@ extern "C" {
 #define meshtastic_Config_PowerConfig_init_default {0, 0, 0, 0, 0, 0, 0, 0, 0}
 #define meshtastic_Config_NetworkConfig_init_default {0, "", "", "", 0, _meshtastic_Config_NetworkConfig_AddressMode_MIN, false, meshtastic_Config_NetworkConfig_IpV4Config_init_default, "", 0}
 #define meshtastic_Config_NetworkConfig_IpV4Config_init_default {0, 0, 0, 0}
-#define meshtastic_Config_DisplayConfig_init_default {0, _meshtastic_Config_DisplayConfig_GpsCoordinateFormat_MIN, 0, 0, 0, _meshtastic_Config_DisplayConfig_DisplayUnits_MIN, _meshtastic_Config_DisplayConfig_OledType_MIN, _meshtastic_Config_DisplayConfig_DisplayMode_MIN, 0, 0, _meshtastic_Config_DisplayConfig_CompassOrientation_MIN}
+#define meshtastic_Config_DisplayConfig_init_default {0, _meshtastic_Config_DisplayConfig_GpsCoordinateFormat_MIN, 0, 0, 0, _meshtastic_Config_DisplayConfig_DisplayUnits_MIN, _meshtastic_Config_DisplayConfig_OledType_MIN, _meshtastic_Config_DisplayConfig_DisplayMode_MIN, 0, 0, _meshtastic_Config_DisplayConfig_CompassOrientation_MIN, 0}
 #define meshtastic_Config_LoRaConfig_init_default {0, _meshtastic_Config_LoRaConfig_ModemPreset_MIN, 0, 0, 0, 0, _meshtastic_Config_LoRaConfig_RegionCode_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, {0, 0, 0}, 0, 0}
 #define meshtastic_Config_BluetoothConfig_init_default {0, _meshtastic_Config_BluetoothConfig_PairingMode_MIN, 0}
 #define meshtastic_Config_SecurityConfig_init_default {{0, {0}}, {0, {0}}, 0, {{0, {0}}, {0, {0}}, {0, {0}}}, 0, 0, 0, 0}
@@ -701,7 +706,7 @@ extern "C" {
 #define meshtastic_Config_PowerConfig_init_zero  {0, 0, 0, 0, 0, 0, 0, 0, 0}
 #define meshtastic_Config_NetworkConfig_init_zero {0, "", "", "", 0, _meshtastic_Config_NetworkConfig_AddressMode_MIN, false, meshtastic_Config_NetworkConfig_IpV4Config_init_zero, "", 0}
 #define meshtastic_Config_NetworkConfig_IpV4Config_init_zero {0, 0, 0, 0}
-#define meshtastic_Config_DisplayConfig_init_zero {0, _meshtastic_Config_DisplayConfig_GpsCoordinateFormat_MIN, 0, 0, 0, _meshtastic_Config_DisplayConfig_DisplayUnits_MIN, _meshtastic_Config_DisplayConfig_OledType_MIN, _meshtastic_Config_DisplayConfig_DisplayMode_MIN, 0, 0, _meshtastic_Config_DisplayConfig_CompassOrientation_MIN}
+#define meshtastic_Config_DisplayConfig_init_zero {0, _meshtastic_Config_DisplayConfig_GpsCoordinateFormat_MIN, 0, 0, 0, _meshtastic_Config_DisplayConfig_DisplayUnits_MIN, _meshtastic_Config_DisplayConfig_OledType_MIN, _meshtastic_Config_DisplayConfig_DisplayMode_MIN, 0, 0, _meshtastic_Config_DisplayConfig_CompassOrientation_MIN, 0}
 #define meshtastic_Config_LoRaConfig_init_zero   {0, _meshtastic_Config_LoRaConfig_ModemPreset_MIN, 0, 0, 0, 0, _meshtastic_Config_LoRaConfig_RegionCode_MIN, 0, 0, 0, 0, 0, 0, 0, 0, 0, {0, 0, 0}, 0, 0}
 #define meshtastic_Config_BluetoothConfig_init_zero {0, _meshtastic_Config_BluetoothConfig_PairingMode_MIN, 0}
 #define meshtastic_Config_SecurityConfig_init_zero {{0, {0}}, {0, {0}}, 0, {{0, {0}}, {0, {0}}, {0, {0}}}, 0, 0, 0, 0}
@@ -765,6 +770,7 @@ extern "C" {
 #define meshtastic_Config_DisplayConfig_heading_bold_tag 9
 #define meshtastic_Config_DisplayConfig_wake_on_tap_or_motion_tag 10
 #define meshtastic_Config_DisplayConfig_compass_orientation_tag 11
+#define meshtastic_Config_DisplayConfig_use_12h_clock_tag 12
 #define meshtastic_Config_LoRaConfig_use_preset_tag 1
 #define meshtastic_Config_LoRaConfig_modem_preset_tag 2
 #define meshtastic_Config_LoRaConfig_bandwidth_tag 3
@@ -907,7 +913,8 @@ X(a, STATIC,   SINGULAR, UENUM,    oled,              7) \
 X(a, STATIC,   SINGULAR, UENUM,    displaymode,       8) \
 X(a, STATIC,   SINGULAR, BOOL,     heading_bold,      9) \
 X(a, STATIC,   SINGULAR, BOOL,     wake_on_tap_or_motion,  10) \
-X(a, STATIC,   SINGULAR, UENUM,    compass_orientation,  11)
+X(a, STATIC,   SINGULAR, UENUM,    compass_orientation,  11) \
+X(a, STATIC,   SINGULAR, BOOL,     use_12h_clock,    12)
 #define meshtastic_Config_DisplayConfig_CALLBACK NULL
 #define meshtastic_Config_DisplayConfig_DEFAULT NULL
 
@@ -985,7 +992,7 @@ extern const pb_msgdesc_t meshtastic_Config_SessionkeyConfig_msg;
 #define MESHTASTIC_MESHTASTIC_CONFIG_PB_H_MAX_SIZE meshtastic_Config_size
 #define meshtastic_Config_BluetoothConfig_size   10
 #define meshtastic_Config_DeviceConfig_size      98
-#define meshtastic_Config_DisplayConfig_size     30
+#define meshtastic_Config_DisplayConfig_size     32
 #define meshtastic_Config_LoRaConfig_size        85
 #define meshtastic_Config_NetworkConfig_IpV4Config_size 20
 #define meshtastic_Config_NetworkConfig_size     202

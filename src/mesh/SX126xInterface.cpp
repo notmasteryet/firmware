@@ -277,8 +277,7 @@ template <typename T> void SX126xInterface<T>::startReceive()
     setStandby();
 
     // We use a 16 bit preamble so this should save some power by letting radio sit in standby mostly.
-    // Furthermore, we need the PREAMBLE_DETECTED and HEADER_VALID IRQ flag to detect whether we are actively receiving
-    int err = lora.startReceiveDutyCycleAuto(preambleLength, 8, RADIOLIB_IRQ_RX_DEFAULT_FLAGS | RADIOLIB_IRQ_PREAMBLE_DETECTED);
+    int err = lora.startReceiveDutyCycleAuto(preambleLength, 8, MESHTASTIC_RADIOLIB_IRQ_RX_FLAGS);
     if (err != RADIOLIB_ERR_NONE)
         LOG_ERROR("SX126X startReceiveDutyCycleAuto %s%d", radioLibErr, err);
     assert(err == RADIOLIB_ERR_NONE);
@@ -294,10 +293,17 @@ template <typename T> void SX126xInterface<T>::startReceive()
 template <typename T> bool SX126xInterface<T>::isChannelActive()
 {
     // check if we can detect a LoRa preamble on the current channel
+    ChannelScanConfig_t cfg = {.cad = {.symNum = NUM_SYM_CAD,
+                                       .detPeak = RADIOLIB_SX126X_CAD_PARAM_DEFAULT,
+                                       .detMin = RADIOLIB_SX126X_CAD_PARAM_DEFAULT,
+                                       .exitMode = RADIOLIB_SX126X_CAD_PARAM_DEFAULT,
+                                       .timeout = 0,
+                                       .irqFlags = RADIOLIB_IRQ_CAD_DEFAULT_FLAGS,
+                                       .irqMask = RADIOLIB_IRQ_CAD_DEFAULT_MASK}};
     int16_t result;
 
     setStandby();
-    result = lora.scanChannel();
+    result = lora.scanChannel(cfg);
     if (result == RADIOLIB_LORA_DETECTED)
         return true;
     if (result != RADIOLIB_CHANNEL_FREE)
