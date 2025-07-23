@@ -16,4 +16,11 @@ class LLCC68Interface : public SX126xInterface<LLCC68>
     LLCC68Interface(LockingArduinoHal *hal, RADIOLIB_PIN_TYPE cs, RADIOLIB_PIN_TYPE irq, RADIOLIB_PIN_TYPE rst,
                     RADIOLIB_PIN_TYPE busy);
 };
+
+class SX1261Interface : public SX126xInterface<SX1261>
+{
+  public:
+    SX1261Interface(LockingArduinoHal *hal, RADIOLIB_PIN_TYPE cs, RADIOLIB_PIN_TYPE irq, RADIOLIB_PIN_TYPE rst,
+                    RADIOLIB_PIN_TYPE busy);
+};
 #endif

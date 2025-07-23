@@ -1298,6 +1298,20 @@ void setup()
     }
 #endif
 
+#if defined(USE_SX1261)
+    if ((!rIf) && (config.lora.region != meshtastic_Config_LoRaConfig_RegionCode_LORA_24)) {
+        rIf = new SX1261Interface(RadioLibHAL, SX126X_CS, SX126X_DIO1, SX126X_RESET, SX126X_BUSY);
+        if (!rIf->init()) {
+            LOG_WARN("No SX1261 radio");
+            delete rIf;
+            rIf = NULL;
+        } else {
+            LOG_INFO("SX1261 init success");
+            radioType = SX1261_RADIO;
+        }
+    }
+#endif
+
 #if defined(USE_LR1110) && RADIOLIB_EXCLUDE_LR11X0 != 1
     if ((!rIf) && (config.lora.region != meshtastic_Config_LoRaConfig_RegionCode_LORA_24)) {
         rIf = new LR1110Interface(RadioLibHAL, LR1110_SPI_NSS_PIN, LR1110_IRQ_PIN, LR1110_NRESET_PIN, LR1110_BUSY_PIN);

@@ -1,0 +1,26 @@
+#define BUTTON_PIN 9
+
+#undef LORA_SCK
+#undef LORA_MISO
+#undef LORA_MOSI
+#undef LORA_CS
+
+#define USE_SX1261
+
+#define LORA_MISO MISO
+#define LORA_SCK SCK
+#define LORA_MOSI MOSI
+#define LORA_CS SS
+#define LORA_RESET 2
+#define LORA_DIO1 1
+#define LORA_BUSY 3
+
+#define SX126X_MAX_POWER 15
+#define SX126X_CS LORA_CS
+#define SX126X_DIO1 LORA_DIO1
+#define SX126X_BUSY LORA_BUSY
+#define SX126X_RESET LORA_RESET
+//#define SX126X_DIO2_AS_RF_SWITCH
+#define SX126X_RXEN 20
+#define SX126X_TXEN 21
+
