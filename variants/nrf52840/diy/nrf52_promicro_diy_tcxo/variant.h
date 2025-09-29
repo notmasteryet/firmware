@@ -135,6 +135,16 @@ NRF52 PRO MICRO PIN ASSIGNMENT
 #define RF95_TXEN RADIOLIB_NC // Assuming that DIO2 is connected to TXEN pin. If not, TXEN must be connected.
 
 // SX126X CONFIG
+#define YDZ6
+
+#ifdef YDZ6
+#define SX126X_CS (32 + 13)      // P1.13 FIXME - we really should define LORA_CS instead
+#define SX126X_DIO1 (0 + 10)     // P0.10 IRQ
+#define SX126X_BUSY (0 + 29)     // P0.29
+#define SX126X_RESET (0 + 9)     // P0.09
+#define SX126X_RXEN (32 + 2)     // P1.02
+#define SX126X_TXEN (32 + 7)     // P1.07
+#else
 #define SX126X_CS (32 + 13)      // P1.13 FIXME - we really should define LORA_CS instead
 #define SX126X_DIO1 (0 + 10)     // P0.10 IRQ
 #define SX126X_DIO2_AS_RF_SWITCH // Note for E22 modules: DIO2 is not attached internally to TXEN for automatic TX/RX switching,
@@ -143,6 +153,7 @@ NRF52 PRO MICRO PIN ASSIGNMENT
 #define SX126X_RESET (0 + 9)     // P0.09
 #define SX126X_RXEN (0 + 17)     // P0.17
 #define SX126X_TXEN RADIOLIB_NC  // Assuming that DIO2 is connected to TXEN pin. If not, TXEN must be connected.
+#endif
 
 // LR1121
 #ifdef USE_LR1121
