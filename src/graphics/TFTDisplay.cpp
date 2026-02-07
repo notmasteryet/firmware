@@ -489,6 +489,8 @@ class LGFX : public lgfx::LGFX_Device
     lgfx::Touch_FT5x06 _touch_instance;
 #elif defined(HELTEC_V4_TFT)
     lgfx::TOUCH_CHSC6X _touch_instance;
+#elif defined(TOUCH_CS)
+    lgfx::Touch_XPT2046 _touch_instance;
 #else
     lgfx::Touch_GT911 _touch_instance;
 #endif
@@ -552,8 +554,16 @@ class LGFX : public lgfx::LGFX_Device
 #endif
             cfg.dummy_read_bits = 1;                      // Number of bits for dummy read before non-pixel data read
             cfg.readable = true;                          // Set to true if data can be read
+#ifndef TFT_INVERSION_OFF
             cfg.invert = true;                            // Set to true if the light/darkness of the panel is reversed
+#else
+            cfg.invert = false;
+#endif
+#if !defined(TFT_RGB_ORDER) || (TFT_RGB_ORDER == TFT_BGR)
             cfg.rgb_order = false;                        // Set to true if the panel's red and blue are swapped
+#else
+            cfg.rgb_order = true;
+#endif
             cfg.dlen_16bit =
                 false;             // Set to true for panels that transmit data length in 16-bit units with 16-bit parallel or SPI
             cfg.bus_shared = true; // If the bus is shared with the SD card, set to true (bus control with drawJpgFile etc.)
@@ -584,6 +594,7 @@ class LGFX : public lgfx::LGFX_Device
         {
             auto cfg = _touch_instance.config();
 
+#ifndef TOUCH_CS             
             cfg.pin_cs = -1;
             cfg.x_min = 0;
             cfg.x_max = TFT_HEIGHT - 1;
@@ -608,7 +619,22 @@ class LGFX : public lgfx::LGFX_Device
             cfg.pin_scl = I2C_SCL;
 #endif
             // cfg.freq = 400000;
-
+#else // TOUCH_CS
+            cfg.x_min = TFT_TOUCH_X_MIN;
+            cfg.x_max = TFT_TOUCH_X_MAX;
+            cfg.y_min = TFT_TOUCH_Y_MIN;
+            cfg.y_max = TFT_TOUCH_Y_MAX;
+            cfg.pin_int = -1;
+            cfg.bus_shared = true;
+            cfg.offset_rotation = TFT_TOUCH_OFFSET_ROTATION;
+            // SPI configuration
+            cfg.spi_host = ST7789_SPI_HOST;
+            cfg.freq = SPI_TOUCH_FREQUENCY;
+            cfg.pin_sclk = ST7789_SCK;
+            cfg.pin_mosi = ST7789_SDA;
+            cfg.pin_miso = ST7789_MISO;
+            cfg.pin_cs = TOUCH_CS;
+#endif
             _touch_instance.config(cfg);
             _panel_instance.setTouch(&_touch_instance);
         }
