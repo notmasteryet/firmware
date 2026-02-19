@@ -686,9 +686,15 @@ void ScanI2CTwoWire::scanPort(I2CPort port, uint8_t *address, uint8_t asize)
                         logFoundDevice("BMX160", (uint8_t)addr.address);
                         break;
                     } else {
+#ifdef DS1307_RTC
+                        type = RTC_DS1307;
+                        logFoundDevice("DS1307", (uint8_t)addr.address);
+                        break;
+#else
                         type = MPU6050;
                         logFoundDevice("MPU6050", (uint8_t)addr.address);
                         break;
+#endif                          
                     }
                 }
                 break;

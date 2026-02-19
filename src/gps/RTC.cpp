@@ -6,6 +6,10 @@
 #include <sys/time.h>
 #include <time.h>
 
+#if defined(DS1307_RTC)
+#include "ds1307.h"
+#endif
+
 static RTCQuality currentQuality = RTCQualityNone;
 uint32_t lastSetFromPhoneNtpOrGps = 0;
 
@@ -69,14 +73,16 @@ RTCSetResult readFromRTC()
     } else {
         LOG_WARN("RTC not found (found address 0x%02X)", rtc_found.address);
     }
-#elif defined(PCF8563_RTC) || defined(PCF85063_RTC)
+#elif defined(PCF8563_RTC) || defined(PCF85063_RTC) || defined(DS1307_RTC)
 #if defined(PCF8563_RTC)
     if (rtc_found.address == PCF8563_RTC) {
         SensorPCF8563 rtc;
 #elif defined(PCF85063_RTC)
     if (rtc_found.address == PCF85063_RTC) {
         SensorPCF85063 rtc;
-
+#elif defined(DS1307_RTC)
+    if (rtc_found.address == DS1307_RTC) {
+        SensorDS1307 rtc;
 #endif
         uint32_t now = millis();
 
@@ -239,14 +245,16 @@ RTCSetResult perhapsSetRTC(RTCQuality q, const struct timeval *tv, bool forceUpd
         } else {
             LOG_WARN("RTC not found (found address 0x%02X)", rtc_found.address);
         }
-#elif defined(PCF8563_RTC) || defined(PCF85063_RTC)
+#elif defined(PCF8563_RTC) || defined(PCF85063_RTC) || defined(DS1307_RTC)
 #if defined(PCF8563_RTC)
         if (rtc_found.address == PCF8563_RTC) {
             SensorPCF8563 rtc;
 #elif defined(PCF85063_RTC)
         if (rtc_found.address == PCF85063_RTC) {
             SensorPCF85063 rtc;
-
+#elif defined(DS1307_RTC)
+        if (rtc_found.address == DS1307_RTC) {
+            SensorDS1307 rtc;
 #endif
 
 #if WIRE_INTERFACES_COUNT == 2
