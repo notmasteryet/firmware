@@ -1,7 +1,9 @@
 #include "RTC.h"
 #include "configuration.h"
+#ifndef DISABLE_WL_IN_STM32
 #include <stm32wle5xx.h>
 #include <stm32wlxx_hal.h>
+#endif
 
 void setBluetoothEnable(bool enable) {}
 

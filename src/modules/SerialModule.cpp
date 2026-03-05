@@ -182,7 +182,7 @@ int32_t SerialModule::runOnce()
                 Serial.setTimeout(moduleConfig.serial.timeout > 0 ? moduleConfig.serial.timeout : TIMEOUT);
             }
 #elif defined(ARCH_STM32WL)
-#ifndef RAK3172
+#if !defined(RAK3172) && !defined(DISABLE_WL_IN_STM32)
             HardwareSerial *serialInstance = &Serial2;
 #else
             HardwareSerial *serialInstance = &Serial1;
@@ -278,7 +278,7 @@ int32_t SerialModule::runOnce()
                 while (Serial1.available()) {
                     serialPayloadSize = Serial1.readBytes(serialBytes, meshtastic_Constants_DATA_PAYLOAD_LEN);
 #else
-#ifndef RAK3172
+#if !defined(RAK3172) && !defined(DISABLE_WL_IN_STM32)
                 HardwareSerial *serialInstance = &Serial2;
 #else
                 HardwareSerial *serialInstance = &Serial1;

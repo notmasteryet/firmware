@@ -14,7 +14,7 @@
 #define FILE_O_READ "r"
 #endif
 
-#if defined(ARCH_STM32WL)
+#if defined(ARCH_STM32WL) && !defined(DISABLE_SPI_FLASH_IN_STM32)
 // STM32WL
 #include "LittleFS.h"
 #define FSCom InternalFS

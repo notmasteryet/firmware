@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef ARCH_STM32WL
+#if defined(ARCH_STM32WL) && !defined(DISABLE_WL_IN_STM32)
 #include "SX126xInterface.h"
 #include "rfswitch.h"
 

@@ -27,7 +27,7 @@
 #include "platform/portduino/USBHal.h"
 #endif
 
-#ifdef ARCH_STM32WL
+#if defined(ARCH_STM32WL) && !defined(DISABLE_WL_IN_STM32)
 #include "STM32WLE5JCInterface.h"
 #endif
 

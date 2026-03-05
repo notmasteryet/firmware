@@ -22,6 +22,8 @@
  * THE SOFTWARE.
  */
 
+#ifndef DISABLE_SPI_FLASH_IN_STM32
+
 #include "LittleFS.h"
 #include "stm32wlxx_hal_flash.h"
 
@@ -196,3 +198,5 @@ bool LittleFS::begin(void)
 
     return true;
 }
+
+#endif

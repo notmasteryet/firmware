@@ -124,6 +124,7 @@ void DetectionSensorModule::sendDetectionMessage()
     meshtastic_MeshPacket *p = allocDataPacket();
     p->want_ack = false;
     p->decoded.payload.size = strlen(message);
+    p->decoded.portnum = meshtastic_PortNum_TEXT_MESSAGE_APP;
     memcpy(p->decoded.payload.bytes, message, p->decoded.payload.size);
     if (moduleConfig.detection_sensor.send_bell && p->decoded.payload.size < meshtastic_Constants_DATA_PAYLOAD_LEN) {
         p->decoded.payload.bytes[p->decoded.payload.size] = 7;        // Bell character
@@ -133,7 +134,7 @@ void DetectionSensorModule::sendDetectionMessage()
     lastSentToMesh = millis();
     if (!channels.isDefaultChannel(0)) {
         LOG_INFO("Send message id=%d, dest=%x, msg=%.*s", p->id, p->to, p->decoded.payload.size, p->decoded.payload.bytes);
-        service->sendToMesh(p);
+        service->sendToMesh(p, RX_SRC_LOCAL, true);
     } else
         LOG_ERROR("Message not allow on Public channel");
     delete[] message;
@@ -146,11 +147,12 @@ void DetectionSensorModule::sendCurrentStateMessage(bool state)
     meshtastic_MeshPacket *p = allocDataPacket();
     p->want_ack = false;
     p->decoded.payload.size = strlen(message);
+    p->decoded.portnum = meshtastic_PortNum_TEXT_MESSAGE_APP;
     memcpy(p->decoded.payload.bytes, message, p->decoded.payload.size);
     lastSentToMesh = millis();
     if (!channels.isDefaultChannel(0)) {
         LOG_INFO("Send message id=%d, dest=%x, msg=%.*s", p->id, p->to, p->decoded.payload.size, p->decoded.payload.bytes);
-        service->sendToMesh(p);
+        service->sendToMesh(p, RX_SRC_LOCAL, true);
     } else
         LOG_ERROR("Message not allow on Public channel");
     delete[] message;

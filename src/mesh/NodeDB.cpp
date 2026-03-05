@@ -601,7 +601,11 @@ void NodeDB::installDefaultConfig(bool preserveKey = false)
 #else
     config.lora.modem_preset = meshtastic_Config_LoRaConfig_ModemPreset_LONG_FAST;
 #endif
+#ifdef USERPREFS_LORACONFIG_HOP_LIMIT
+    config.lora.hop_limit = USERPREFS_LORACONFIG_HOP_LIMIT;
+#else
     config.lora.hop_limit = HOP_RELIABLE;
+#endif
 #ifdef USERPREFS_CONFIG_LORA_IGNORE_MQTT
     config.lora.ignore_mqtt = USERPREFS_CONFIG_LORA_IGNORE_MQTT;
 #else
@@ -643,7 +647,13 @@ void NodeDB::installDefaultConfig(bool preserveKey = false)
         memcpy(config.security.private_key.bytes, private_key_temp, config.security.private_key.size);
         printBytes("Restored key", config.security.private_key.bytes, config.security.private_key.size);
     } else {
+#ifdef USERPREFS_CONFIG_PRIVATE_KEY
+        const uint8_t key[32] = USERPREFS_CONFIG_PRIVATE_KEY;
+        config.security.private_key.size = 32;
+        memcpy(config.security.private_key.bytes, key, config.security.private_key.size);
+#else
         config.security.private_key.size = 0;
+#endif
     }
     config.security.public_key.size = 0;
 #ifdef PIN_GPS_EN
@@ -668,6 +678,9 @@ void NodeDB::installDefaultConfig(bool preserveKey = false)
 #endif
     config.position.broadcast_smart_minimum_distance = 100;
     config.position.broadcast_smart_minimum_interval_secs = default_broadcast_smart_minimum_interval_secs;
+#ifdef USERPREFS_CONFIG_DEVICE_ROLE
+    config.device.role = USERPREFS_CONFIG_DEVICE_ROLE;
+#endif    
     if (config.device.role != meshtastic_Config_DeviceConfig_Role_ROUTER)
         config.device.node_info_broadcast_secs = default_node_info_broadcast_secs;
     config.security.serial_enabled = true;
@@ -905,9 +918,17 @@ void NodeDB::installDefaultModuleConfig()
     moduleConfig.neighbor_info.enabled = false;
 
     moduleConfig.has_detection_sensor = true;
-    moduleConfig.detection_sensor.enabled = false;
-    moduleConfig.detection_sensor.detection_trigger_type = meshtastic_ModuleConfig_DetectionSensorConfig_TriggerType_LOGIC_HIGH;
-    moduleConfig.detection_sensor.minimum_broadcast_secs = 45;
+    // moduleConfig.detection_sensor.enabled = false;
+    // moduleConfig.detection_sensor.detection_trigger_type = meshtastic_ModuleConfig_DetectionSensorConfig_TriggerType_LOGIC_HIGH;
+    // moduleConfig.detection_sensor.minimum_broadcast_secs = 45;
+    moduleConfig.detection_sensor.enabled = true;
+    moduleConfig.detection_sensor.monitor_pin = PA15;
+    moduleConfig.detection_sensor.minimum_broadcast_secs = 30;
+    moduleConfig.detection_sensor.state_broadcast_secs = 0;
+    moduleConfig.detection_sensor.detection_trigger_type =
+        meshtastic_ModuleConfig_DetectionSensorConfig_TriggerType_LOGIC_LOW;
+    moduleConfig.detection_sensor.use_pullup = true;
+    strcpy(moduleConfig.detection_sensor.name, "Mailbox");
 
     moduleConfig.has_ambient_lighting = true;
     moduleConfig.ambient_lighting.current = 10;
@@ -978,6 +999,10 @@ void NodeDB::installRoleDefaults(meshtastic_Config_DeviceConfig_Role role)
         moduleConfig.telemetry.air_quality_interval = MAX_INTERVAL;
         moduleConfig.telemetry.health_update_interval = MAX_INTERVAL;
     }
+
+#ifdef USERPREFS_CONFIG_REBROADCAST_MODE
+    config.device.rebroadcast_mode = USERPREFS_CONFIG_REBROADCAST_MODE;
+#endif
 }
 
 void NodeDB::initModuleConfigIntervals()

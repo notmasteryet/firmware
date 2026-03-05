@@ -1,7 +1,7 @@
 #include "MotionSensor.h"
 #include "graphics/draw/CompassRenderer.h"
 
-#if !defined(ARCH_STM32WL) && !MESHTASTIC_EXCLUDE_I2C
+#if !defined(ARCH_STM32WL) && !defined(ARCH_STM32) && !MESHTASTIC_EXCLUDE_I2C
 
 char timeRemainingBuffer[12];
 
