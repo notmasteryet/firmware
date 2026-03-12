@@ -862,6 +862,15 @@ void NodeDB::installDefaultModuleConfig()
     moduleConfig.external_notification.output_ms = 100;
     moduleConfig.external_notification.active = true;
 #endif
+#ifdef ESP32C6_LCD147
+    moduleConfig.canned_message.rotary1_enabled = true;
+    moduleConfig.canned_message.inputbroker_pin_a = ROTARY_A;
+    moduleConfig.canned_message.inputbroker_pin_b = ROTARY_B;
+    moduleConfig.canned_message.inputbroker_pin_press = ROTARY_PRESS;
+    moduleConfig.canned_message.inputbroker_event_cw = meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar(28);
+    moduleConfig.canned_message.inputbroker_event_ccw = meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar(29);
+    moduleConfig.canned_message.inputbroker_event_press = meshtastic_ModuleConfig_CannedMessageConfig_InputEventChar_SELECT;
+#endif
 #ifdef T_LORA_PAGER
     moduleConfig.canned_message.updown1_enabled = true;
     moduleConfig.canned_message.inputbroker_pin_a = ROTARY_A;

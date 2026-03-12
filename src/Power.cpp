@@ -53,7 +53,7 @@
 #define DELAY_FOREVER portMAX_DELAY
 #endif
 
-#if defined(BATTERY_PIN) && defined(ARCH_ESP32)
+#if defined(BATTERY_PIN) && defined(ARCH_ESP32) && !defined(CONFIG_IDF_TARGET_ESP32C6)
 
 #ifndef BAT_MEASURE_ADC_UNIT // ADC1 is default
 static const adc1_channel_t adc_channel = ADC_CHANNEL;
@@ -71,7 +71,7 @@ static const adc_atten_t atten = ADC_ATTEN_DB_12;
 #else
 static const adc_atten_t atten = ADC_ATTENUATION;
 #endif
-#endif // BATTERY_PIN && ARCH_ESP32
+#endif // BATTERY_PIN && ARCH_ESP32 && !ESP32C6
 
 #ifdef EXT_CHRG_DETECT
 #ifndef EXT_CHRG_DETECT_MODE
@@ -323,7 +323,14 @@ class AnalogBatteryLevel : public HasBatteryLevel
             float scaled = 0;
 
             battery_adcEnable();
-#ifdef ARCH_ESP32 // ADC block for espressif platforms
+#if defined(ARCH_ESP32) && defined(CONFIG_IDF_TARGET_ESP32C6)
+            // ESP32-C6: use analogReadMilliVolts() which wraps the new IDF ADC oneshot API
+            for (uint32_t i = 0; i < BATTERY_SENSE_SAMPLES; i++) {
+                raw += analogReadMilliVolts(BATTERY_PIN);
+            }
+            raw = raw / BATTERY_SENSE_SAMPLES;
+            scaled = raw * operativeAdcMultiplier;
+#elif defined(ARCH_ESP32) // Legacy ADC block for older espressif platforms
             raw = espAdcRead();
             scaled = esp_adc_cal_raw_to_voltage(raw, adc_characs);
             scaled *= operativeAdcMultiplier;
@@ -355,7 +362,7 @@ class AnalogBatteryLevel : public HasBatteryLevel
         return 0;
     }
 
-#if defined(ARCH_ESP32) && !defined(HAS_PMU) && defined(BATTERY_PIN)
+#if defined(ARCH_ESP32) && !defined(HAS_PMU) && defined(BATTERY_PIN) && !defined(CONFIG_IDF_TARGET_ESP32C6)
     /**
      * ESP32 specific function for getting calibrated ADC reads
      */
@@ -632,7 +639,11 @@ bool Power::analogInit()
 #endif
 
 #ifdef ARCH_ESP32 // ESP32 needs special analog stuff
-
+#if defined(CONFIG_IDF_TARGET_ESP32C6)
+    // ESP32-C6 uses the new IDF ADC API via analogReadMilliVolts(); set 11dB attenuation for 0-3.1V range
+    analogSetPinAttenuation(BATTERY_PIN, ADC_11db);
+    LOG_INFO("ESP32-C6 ADC init on pin %d with 11dB attenuation", BATTERY_PIN);
+#else
 #ifndef ADC_WIDTH // max resolution by default
     static const adc_bits_width_t width = ADC_WIDTH_BIT_12;
 #else
@@ -667,6 +678,7 @@ bool Power::analogInit()
     else {
         LOG_INFO("ADC config based on default reference voltage");
     }
+#endif // !CONFIG_IDF_TARGET_ESP32C6
 #endif // ARCH_ESP32
 
     // NRF52 ADC init moved to powerHAL_init in nrf52 platform

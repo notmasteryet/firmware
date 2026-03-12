@@ -4,9 +4,11 @@
 #include "configuration.h"
 
 #ifdef ARCH_ESP32
+#if !defined(CONFIG_IDF_TARGET_ESP32C6) // Legacy ADC API not available on ESP32-C6 (IDF v5 only)
 // "legacy adc calibration driver is deprecated, please migrate to use esp_adc/adc_cali.h and esp_adc/adc_cali_scheme.h
 #include <esp_adc_cal.h>
 #include <soc/adc_channel.h>
+#endif
 #endif
 
 #ifndef NUM_OCV_POINTS

@@ -228,7 +228,7 @@
 #define LORA_CS 18
 #endif
 
-#define SERIAL0_RX_GPIO 3 // Always GPIO3 on ESP32 // FIXME: may be different on ESP32-S3, etc.
+//#define SERIAL0_RX_GPIO 3 // Always GPIO3 on ESP32 // FIXME: may be different on ESP32-S3, etc.
 
 // Setup flag, which indicates if our device supports power management
 #ifdef CONFIG_PM_ENABLE

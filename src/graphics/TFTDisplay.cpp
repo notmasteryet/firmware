@@ -1345,7 +1345,12 @@ void TFTDisplay::sendCommand(uint8_t com)
     switch (com) {
     case DISPLAYON: {
         // LOG_DEBUG("Display on");
+#if !defined(ST7789_CS)
+        // For ST7789_CS, LovyanGFX owns TFT_BL via LEDC (setBrightness).
+        // Calling backlightEnable->set() calls pinMode/digitalWrite which detaches LEDC in Arduino ESP32 v3.x (IDF5),
+        // breaking subsequent tft->setBrightness() calls.
         backlightEnable->set(true);
+#endif
 #if ARCH_PORTDUINO
         display(true);
         if (portduino_config.displayBacklight.pin > 0)
@@ -1372,7 +1377,9 @@ void TFTDisplay::sendCommand(uint8_t com)
     }
     case DISPLAYOFF: {
         // LOG_DEBUG("Display off");
+#if !defined(ST7789_CS)
         backlightEnable->set(false);
+#endif
 #if ARCH_PORTDUINO
         tft->clear();
         if (portduino_config.displayBacklight.pin > 0)
