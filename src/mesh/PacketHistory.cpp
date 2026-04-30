@@ -8,9 +8,11 @@
 #endif
 #include "Throttle.h"
 
+#ifndef PACKETHISTORY_MAX
 #define PACKETHISTORY_MAX                                                                                                        \
     max((u_int32_t)(MAX_NUM_NODES * 2.0),                                                                                        \
         (u_int32_t)100) // x2..3  Should suffice. Empirical setup. 16B per record malloc'ed, but no less than 100
+#endif
 
 #define RECENT_WARN_AGE (10 * 60 * 1000L) // Warn if the packet that gets removed was more recent than 10 min
 
@@ -19,9 +21,11 @@
 
 PacketHistory::PacketHistory(uint32_t size) : recentPacketsCapacity(0), recentPackets(NULL) // Initialize members
 {
-    if (size < 4 || size > PACKETHISTORY_MAX) { // Copilot suggested - makes sense
+    if (size == (uint32_t)-1) {
+        size = PACKETHISTORY_MAX; // sentinel default, no warning
+    } else if (size < 4 || size > PACKETHISTORY_MAX) {
         LOG_WARN("Packet History - Invalid size %d, using default %d", size, PACKETHISTORY_MAX);
-        size = PACKETHISTORY_MAX; // Use default size if invalid
+        size = PACKETHISTORY_MAX;
     }
 
 #if !MESHTASTIC_EXCLUDE_PKT_HISTORY_HASH

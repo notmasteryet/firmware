@@ -2,7 +2,7 @@
 #include "NodeDB.h"
 #include "configuration.h"
 
-#if !defined(ARCH_ESP32) && !defined(ARCH_RP2040) && !defined(ARCH_PORTDUINO)
+#if !defined(ARCH_ESP32) && !defined(ARCH_RP2040) && !defined(ARCH_PORTDUINO) && !defined(ARCH_ESP8266)
 #include "Tone.h"
 #endif
 
@@ -11,7 +11,7 @@
 #include <unordered_map>
 #endif
 
-#if !defined(ARCH_PORTDUINO)
+#if !defined(ARCH_PORTDUINO) && !defined(ARCH_ESP8266)
 extern "C" void delay(uint32_t dwMs);
 #endif
 

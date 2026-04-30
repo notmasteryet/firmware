@@ -1124,7 +1124,14 @@ void loop()
 
     if (RadioLibInterface::instance != nullptr) {
         static uint32_t lastRadioMissedIrqPoll;
-        if (!Throttle::isWithinTimespanMs(lastRadioMissedIrqPoll, 1000)) {
+#ifdef ARCH_ESP8266
+        // ESP8266 ISRs miss edges more often (no FreeRTOS preemption, flash cache latency);
+        // poll more frequently so a missed RX_DONE is caught within 100 ms.
+        constexpr uint32_t MISSED_IRQ_POLL_MS = 100;
+#else
+        constexpr uint32_t MISSED_IRQ_POLL_MS = 1000;
+#endif
+        if (!Throttle::isWithinTimespanMs(lastRadioMissedIrqPoll, MISSED_IRQ_POLL_MS)) {
             lastRadioMissedIrqPoll = millis();
             RadioLibInterface::instance->pollMissedIrqs();
         }

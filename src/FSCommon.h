@@ -40,6 +40,21 @@ using namespace STM32_LittleFS_Namespace;
 #define FILE_O_READ "r"
 #endif
 
+#if defined(ARCH_ESP8266)
+// ESP8266 version — LittleFS internal caches are directed to the IRAM secondary
+// heap (enabled via -DMMU_IRAM_HEAP) to keep DRAM heap free for runtime use.
+#include <LittleFS.h>
+#include <umm_malloc/umm_heap_select.h>
+#define FSCom LittleFS
+inline bool FSBegin()
+{
+    HeapSelectIram _iram;
+    return FSCom.begin();
+}
+#define FILE_O_WRITE "w"
+#define FILE_O_READ "r"
+#endif
+
 #if defined(ARCH_NRF52)
 // NRF52 version
 #include "InternalFileSystem.h"

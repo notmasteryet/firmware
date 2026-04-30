@@ -7,8 +7,9 @@
 #include <RadioLib.h>
 #include <sys/types.h>
 
-// ESP32 has special rules about ISR code
-#ifdef ARDUINO_ARCH_ESP32
+// Both ESP32 and ESP8266 require ISR handlers to reside in IRAM; on ESP8266
+// executing ISR code from flash causes cache misses that drop interrupt edges.
+#if defined(ARDUINO_ARCH_ESP32) || defined(ARDUINO_ARCH_ESP8266)
 #define INTERRUPT_ATTR IRAM_ATTR
 #else
 #define INTERRUPT_ATTR

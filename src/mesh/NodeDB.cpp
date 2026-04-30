@@ -1038,8 +1038,10 @@ void NodeDB::resetNodes(bool keepFavorites)
     devicestate.has_rx_waypoint = false;
     saveNodeDatabaseToDisk();
     saveDeviceStateToDisk();
+#if !MESHTASTIC_EXCLUDE_NEIGHBORINFO
     if (neighborInfoModule && moduleConfig.neighbor_info.enabled)
         neighborInfoModule->resetNeighbors();
+#endif
 }
 
 void NodeDB::removeNodeByNum(NodeNum nodeNum)
