@@ -88,6 +88,20 @@ NRF52 PRO MICRO PIN ASSIGNMENT
 // Button
 #define BUTTON_PIN (32 + 0) // P1.00
 
+// ===== Event-switch custom feature =====
+// Mode is latched ONCE at boot from EVENT_SWITCH_PIN:
+//   pin LOW  (switch closed to GND) -> EVENT mode: broadcast EVENT_MESSAGE_TEXT once
+//                                      on channel EVENT_CHANNEL_NAME, drive EVENT_OUTPUT_PIN
+//                                      HIGH, then the node goes quiet (suppresses its own TX).
+//   pin HIGH (switch open, internal pull-up) -> STANDARD mode: normal operation.
+// To change mode: flip the switch and reboot.
+// These reuse the bottom-edge GPS pads. GPS is compiled out for this env
+// (MESHTASTIC_EXCLUDE_GPS in this variant's platformio.ini) so nothing else drives them.
+#define EVENT_SWITCH_PIN (0 + 24)    // P0.24 (GPS_EN pad) - mode switch input (INPUT_PULLUP, LOW = event)
+#define EVENT_OUTPUT_PIN (0 + 20)    // P0.20 (GPS_TX pad) - driven HIGH after the event message is sent
+#define EVENT_CHANNEL_NAME "Mysens"  // channel matched by name; falls back to primary if absent
+#define EVENT_MESSAGE_TEXT "EVENT"   // text broadcast once in event mode
+
 // GPS
 #define GPS_TX_PIN (0 + 20) // P0.20 - This is data from the MCU
 #define GPS_RX_PIN (0 + 22) // P0.22 - This is data from the GNSS

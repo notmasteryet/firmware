@@ -4,6 +4,7 @@
 #endif
 #include "../detect/ScanI2C.h"
 #include "Channels.h"
+#include "EventMode.h"
 #include "CryptoEngine.h"
 #include "Default.h"
 #include "FSCommon.h"
@@ -1613,6 +1614,13 @@ bool NodeDB::saveToDiskNoRetry(int saveWhat)
 
 bool NodeDB::saveToDisk(int saveWhat)
 {
+    // Event-switch dormant mode mutates config in RAM (BLE/WiFi/rebroadcast off). Never persist that:
+    // mode is decided by the switch pin at every boot, so the on-flash config must stay untouched.
+    if (EventMode::active) {
+        LOG_DEBUG("EventMode active: skip saveToDisk (keep flash config unchanged)");
+        return true;
+    }
+
     LOG_DEBUG("Save to disk %d", saveWhat);
 
     // do not try to save anything if power level is not safe. In many cases flash will be lock-protected
